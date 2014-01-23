@@ -3,21 +3,27 @@
 
 #include <Arduno.h>
 
-#define PIN_CHANNELS 4
+// change these if you know what you're doing
+#define PIN_CHANNELS 4 // also edit begin()
+#define MAX_ARPEGGIO 4 // also edit sendArpeggioOn()
+// ------------------------------------------
 
 class Synth_Class {
   public:
     Synth_Class();
     ~Synth_Class();
     void begin(int pin1, int pin2=0, int pin3=0, int pin4=0);
-    void generate();
-    void sendNote(int note, int pin=0);
+    void generate(); // place in loop for wave generation.
+    void sendNoteOn(int note, int pin=0);
     void sendPitchBend(int bend, int pin=0);
-    void sendArpeggio(int offset, int pin=0);
+    void sendArpeggioOn(int pin, int offset1, int offset2=0, int offset3=0, int offset4=0);
+    void sendArpeggioOff(int pin);
     void sendDutyCycle(int percent, int pin=0);
-    void sendNoise(int pitch=60, int pin=0);
-    void stopNote(int pin=0);
+    void sendNoise(int note=60, int pin=0);
+    void sendNoteOff(int pin=0);
   private:
+    bool _noise[PIN_CHANNELS]; // checker for noise mode
+    int _arpeggio[PIN_CHANNELS][MAX_ARPEGGIO]; // checker for arpeggioes
     int _midiMap[127]; // stores mappings of MIDI scale to wavelength in microseconds
     int _pinDefault; // default pin if none specified
     int _channelCount; // saves processing power by keeping track of actual number of outputs.
