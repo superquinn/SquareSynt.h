@@ -73,7 +73,7 @@ void Synth_Class::sendNoise(int pitch, int pin){
   return;
 }
 
-void Synth_Class::stop(int pin){
+void Synth_Class::stopNote(int pin){
   if(!pin) pin=_pinDefault;
   _microWavelength[pin]=0;
   return;

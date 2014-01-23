@@ -4,8 +4,6 @@
 #include <Arduno.h>
 
 #define PIN_CHANNELS 4
-#define DATA 1
-#define DUTY_CYCLE 0
 
 class Synth_Class {
   public:
@@ -18,7 +16,7 @@ class Synth_Class {
     void sendArpeggio(int offset, int pin=0);
     void sendDutyCycle(int percent, int pin=0);
     void sendNoise(int pitch=60, int pin=0);
-    void stop(int pin=0);
+    void stopNote(int pin=0);
   private:
     int _midiMap[127]; // stores mappings of MIDI scale to wavelength in microseconds
     int _pinDefault; // default pin if none specified
@@ -30,5 +28,7 @@ class Synth_Class {
     unsigned long _microTimerDuty[PIN_CHANNELS]; // duty cycle timer
     
 };
+
+extern Synth_Class Synth;
 
 #endif
