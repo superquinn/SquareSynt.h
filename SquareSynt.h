@@ -4,7 +4,6 @@
 #include <Arduno.h>
 
 // change these if you know what you're doing
-#define PIN_CHANNELS 4 // also edit begin()
 #define MAX_ARPEGGIO 4 // also edit sendArpeggioOn()
 // ------------------------------------------
 
@@ -12,27 +11,27 @@ class Synth_Class {
   public:
     Synth_Class();
     ~Synth_Class();
-    void begin(int pin1, int pin2=0, int pin3=0, int pin4=0);
+    void begin(int pin);
     void generate(); // place in loop for wave generation.
-    void sendNoteOn(int note, int pin=0);
-    void sendPitchBend(int bend, int pin=0);
-    void sendArpeggioOn(int pin, int offset1, int offset2=0, int offset3=0, int offset4=0);
-    void sendArpeggioOff(int pin);
-    void sendDutyCycle(int percent, int pin=0);
-    void sendNoise(int note=60, int pin=0);
-    void sendNoteOff(int pin=0);
+    void noteOn(int note, int duty=50);
+    void pitchBend(int bend);
+    void arpeggioOn(int offset1, int offset2=0, int offset3=0, int offset4=0);
+    void arpeggioOff();
+    void dutyCycle(int percent);
+    void noise(int note=60);
+    void noteOff();
   private:
-    bool _noise[PIN_CHANNELS]; // checker for noise mode
-    int _arpeggio[PIN_CHANNELS][MAX_ARPEGGIO]; // checker for arpeggioes
-    int _midiMap[127]; // stores mappings of MIDI scale to wavelength in microseconds
-    int _pinDefault; // default pin if none specified
-    int _channelCount; // saves processing power by keeping track of actual number of outputs.
-    int _pin[PIN_CHANNELS]; // stores the pin numbers
-    int _dutyCycle[PIN_CHANNELS]; //stores duty cycle percentages
-    unsigned long _microWavelength[PIN_CHANNELS]; // stores wavelength in microseconds per pin
-    unsigned long _microTimerWave[PIN_CHANNELS]; // wavelength timer
-    unsigned long _microTimerDuty[PIN_CHANNELS]; // duty cycle timer
-    
+    bool _noise; // checker for noise mode
+    int _arpeggio[MAX_ARPEGGIO+1]; // checker for arpeggio values
+    int _arpeggioCount; // amount of notes to arpeggiate
+    int _arpeggioTrack; // keeps track of arpeg. cycling in generate()
+    int _note; // keep track of MIDI note value for reference
+    int _pin; // stores the pin number
+    float _dutyCycle; //stores duty cycle percentage
+    unsigned long _microWavelength; // stores wavelength in microseconds
+    unsigned long _microTimerWave; // wavelength timer
+    unsigned long _microTimerDuty; // duty cycle timer
+    static const unsigned long _midiMap[128]; // mappings of midi to wavelength in microseconds
 };
 
 extern Synth_Class Synth;

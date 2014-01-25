@@ -1,7 +1,7 @@
-#include "SquareSynt.h"
+#include <SquareSynt.h>
 
 // example sketch, cycling through stable range of notes.
-// toggling between clean notes and arpeggiated major chords
+// toggling between noise mode and a tone at 50% duty cycle
 
 long unsigned timer;
 long unsigned count;
@@ -16,17 +16,16 @@ void setup() {
 
 void loop(){
   count=millis();
-  if(count-timer>=100) {
+  if(count-timer>=50) {
     if(note>95 || note<36) {
       toggle[0]*=-1;
       toggle[1]++;
     }
     if(toggle[0]>0) note++;
     else note--;
-    Synth.noteOn(note,50);
     if(toggle[1]>3) toggle[1]=0;
-    if(toggle[1]>1) Synth.arpeggioOn(4,7);
-    else Synth.arpeggioOff();
+    if(toggle[1]>1) Synth.noteOn(note, 50);
+    else Synth.noise(note);
     timer=count;
   }
   Synth.generate();

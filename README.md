@@ -1,4 +1,4 @@
 SquareSynt.h
 ============
 
-An arduino library for square wave manipulation
+An arduino library for advanced square wave manipulation.
