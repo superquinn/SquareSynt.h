@@ -18,7 +18,7 @@ class Synth_Class {
     void arpeggioOn(int offset1, int offset2=0, int offset3=0, int offset4=0);
     void arpeggioOff();
     void dutyCycle(int percent);
-    void noise(int note=60);
+    void noise(int note=60, int minDuty=1, int maxDuty=51);
     void noteOff();
   private:
     bool _noise; // checker for noise mode
@@ -28,6 +28,7 @@ class Synth_Class {
     int _note; // keep track of MIDI note value for reference
     int _pin; // stores the pin number
     float _dutyCycle; //stores duty cycle percentage
+    int _minDuty,_maxDuty; // optional paramaters for the noise generator
     unsigned long _microWavelength; // stores wavelength in microseconds
     unsigned long _microTimerWave; // wavelength timer
     unsigned long _microTimerDuty; // duty cycle timer

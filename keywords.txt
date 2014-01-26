@@ -1,11 +1,12 @@
 Synth_Class	KEYWORD1
+Synth	KEYWORD1
 begin	KEYWORD2
 generate	KEYWORD2
-sendNoteOn	KEYWORD2
-sendNoteOff	KEYWORD2
-sendPitchBend	KEYWORD2
-sendArpeggioOn	KEYWORD2
-sendArpeggioOff	KEYWORD2
-sendDutyCycle	KEYWORD2
-sendNoise	KEYWORD2
+noteOn	KEYWORD2
+noteOff	KEYWORD2
+pitchBend	KEYWORD2
+arpeggioOn	KEYWORD2
+arpeggioOff	KEYWORD2
+dutyCycle	KEYWORD2
+noise	KEYWORD2
 

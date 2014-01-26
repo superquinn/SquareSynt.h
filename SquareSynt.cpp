@@ -36,7 +36,7 @@ void Synth_Class::generate(){
       digitalWrite(_pin, LOW);
       if(_microTimerDuty>=_microWavelength) {
         _microTimerWave=micros(); // when duty completes, reset wave timer
-        if(_noise) _dutyCycle=random(1,51)*0.01; // quickly change duty cycles for pseudo-noise
+        if(_noise) _dutyCycle=random(_minDuty,_maxDuty)*0.01; // quickly change duty cycles for pseudo-noise
         if(_arpeggioCount){
           _microWavelength=_midiMap[_arpeggio[_arpeggioTrack]+_note];
           if(_arpeggioTrack>=_arpeggioCount) _arpeggioTrack=0;
@@ -92,8 +92,10 @@ void Synth_Class::dutyCycle(int percent){
   return;
 }
 
-void Synth_Class::noise(int note){
+void Synth_Class::noise(int note, int minDuty, int maxDuty){
   _note=note;
+  _minDuty=minDuty;
+  _maxDuty=maxDuty;
   _microWavelength=_midiMap[note];
   _noise=true;
   return;
