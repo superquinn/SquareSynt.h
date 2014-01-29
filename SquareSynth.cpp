@@ -35,14 +35,6 @@ void SquareSynth_Class::begin(int synths, ...){
   va_end(pins);
   return;
 }
-
-void SquareSynth_Class::begin(int pin){
-  delete [] Channel; // remove multi version of object, as not being used.
-  _synthCount=1;
-  pinMode(pin,OUTPUT);
-  Synth.begin(pin);
-  return;
-}
 ///////////////////////////////////////////////////////////////
 ////                  Automation code here                 ////
 ///////////////////////////////////////////////////////////////

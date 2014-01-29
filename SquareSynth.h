@@ -42,10 +42,9 @@ class SquareSynth_Class {
     SquareSynth_Class();
     ~SquareSynth_Class();
     void begin(int synths, ...);
-    void begin(int pin);
-    void tempo(int bpm);
-    void generate(); // acts the same as Synth's generate, but calls all instances.
-    void 
+    //void tempo(int bpm);
+    //void generate(); // acts the same as Synth's generate, but calls all instances.
+    //void 
   private:
     int _synthCount;
     
