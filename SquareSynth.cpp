@@ -195,10 +195,10 @@ void Synth_Class::generate(){
   return;
 }
 
-void Synth_Class::noteOn(int note, int duty){
-  _note=_volatileNote=note;
+void Synth_Class::noteOn(int pitch, int duty){
+  _note=_volatileNote=pitch;
   if(duty) dutyCycle(duty);
-  _microWavelength=_midiMap[note];
+  _microWavelength=_midiMap[pitch];
   return;
 }
 
@@ -259,11 +259,11 @@ void Synth_Class::dutyCycle(int percent){
   return;
 }
 
-void Synth_Class::noise(int note, int minDuty, int maxDuty){
-  _note=_volatileNote=note;
+void Synth_Class::noise(int pitch, int minDuty, int maxDuty){
+  _note=_volatileNote=pitch;
   _minDuty=minDuty;
   _maxDuty=maxDuty;
-  _microWavelength=_midiMap[note];
+  _microWavelength=_midiMap[pitch];
   _noise=true;
   _addDepth=false;
   return;
@@ -295,8 +295,8 @@ void Synth_Class::_recievetempo(int tempoVal){
 
 // Simple commands:
 
-void Synth_Class::note(int note, int duty, int depth, int steps){
-  noteOn(note,duty);
+void Synth_Class::note(int pitch, int duty, int depth, int steps){
+  noteOn(pitch,duty);
   addDepth(depth,steps);
   return;
 }
@@ -309,24 +309,44 @@ void Synth_Class::note(int note, int duty, int depth, int steps){
 
 // Drumkit commands:
 
-void Synth_Class::cymbal(int note, int decay){
+void Synth_Class::cymbal(int pitch, int decay, int steps){
+  noise(pitch);
+  transform(pitch-decay, steps);
   
+  return;
 }
 
-void Synth_Class::tom(int note, int decay){
+void Synth_Class::tom(int pitch, int decay, int steps){
+  note(pitch);
+  transform(pitch-decay, steps);
   
+  return;
 }
 
-void Synth_Class::kick(int note, int decay){
+void Synth_Class::kick(int pitch, int decay, int steps){
+  note(pitch);
+  transform(pitch-decay, steps);
   
+  return;
 }
 
-void Synth_Class::hihat(int note, int decay){
+void Synth_Class::hihat(int pitch, int decay, int steps){
+  note(pitch);
+  transform(pitch-decay, steps);
   
+  return;
 }
 
-void Synth_Class::snare(int note, int decay){
+void Synth_Class::hihatOpen(int pitch, int decay, int steps){
+  noise(pitch);
+  transform(pitch-decay, steps);
   
+  return;
 }
 
-
+void Synth_Class::snare(int pitch, int decay, int steps){
+  noise(pitch);
+  transform(pitch-decay, steps);
+  
+  return;
+}

@@ -60,12 +60,12 @@ class Synth_Class {
     ~Synth_Class();
     void begin(int pin);
     void generate(); // place in loop for wave generation.
-    void noteOn(int note=60, int duty=50);
+    void noteOn(int pitch=60, int duty=50);
     void pitchBend(int bend=0); // not fully tested yet!
     void arpeggioOn(int offset1, int offset2=0, int offset3=0, int offset4=0);
     void arpeggioOff();
     void dutyCycle(int percent);
-    void noise(int note=60, int minDuty=1, int maxDuty=51);
+    void noise(int pitch=60, int minDuty=1, int maxDuty=51);
     void noteOff();
     void clearFlags();
     
@@ -81,17 +81,18 @@ class Synth_Class {
     ////////////////////////////////////////////////
     
     // Simple commands:
-    void note(int note=60, int duty=50, int depth=15, int steps=1);
+    void note(int pitch=60, int duty=50, int depth=30, int steps=1);
     
     // Instrument commands:
     
     
     // Drumkit commands:
-    void cymbal(int note, int decay);
-    void tom(int note, int decay);
-    void kick(int note, int decay);
-    void hihat(int note, int decay);
-    void snare(int note, int decay);
+    void cymbal(int pitch, int decay, int steps);
+    void tom(int pitch, int decay, int steps);
+    void kick(int pitch, int decay, int steps);
+    void hihat(int pitch, int decay, int steps);
+    void hihatOpen(int pitch, int decay, int steps);
+    void snare(int pitch, int decay, int steps);
     
   private:
     bool _noise; // noise mode flag
