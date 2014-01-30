@@ -5,7 +5,7 @@ void setup(){
 }
 
 void loop(){
-  
+  songHolder1();
 }
 
 void songHolder1(){
@@ -23,16 +23,16 @@ void songHolder1(){
 
 void chunk1(){
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_G3);
+  Channel[0].note(_G3);
   SquareSynth.quarter();
   
   return;
@@ -40,16 +40,16 @@ void chunk1(){
 
 void chunk2(){
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
   return;
@@ -57,41 +57,41 @@ void chunk2(){
 
 void chunk3(){
   
-  Channel[0].noteOn(_GS3);
+  Channel[0].note(_GS3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_G3);
+  Channel[0].note(_G3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_G3);
+  Channel[0].note(_G3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_G3);
+  Channel[0].note(_G3);
   SquareSynth.quarter();
   
   return;
 }
 void chunk4(){
   
-  Channel[0].noteOn(_G3);
+  Channel[0].note(_G3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_A3);
+  Channel[0].note(_A3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_B3);
+  Channel[0].note(_B3);
   SquareSynth.quarter();
   
-  Channel[0].noteOn(_C4);
+  Channel[0].note(_C4);
   SquareSynth.quarter();
   
   return;
 }
 void chunk5(){
-  Channel[0].noteOn(_D4);
+  Channel[0].note(_D4);
   SquareSynth.eighth();
   
-  Channel[0].noteOn(_D4);
+  Channel[0].note(_D4);
   SquareSynth.eighth();
   Channel[0].noteOff();
   
@@ -101,18 +101,18 @@ void chunk5(){
   return;
 }
 void chunk6(){
-  Channel[0].noteOn(_F4);
+  Channel[0].note(_F4);
   SquareSynth.eighth();
   
-  Channel[0].noteOn(_F4);
+  Channel[0].note(_F4);
   SquareSynth.eighth();
   Channel[0].noteOff();
   
   SquareSynth.eighth();
   
-  Channel[0].noteOn(_C4);
+  Channel[0].note(_C4);
   SquareSynth.eighth();
   
-  Channel[0].noteOn(_F4);
+  Channel[0].note(_F4);
   SquareSynth.half();
 }

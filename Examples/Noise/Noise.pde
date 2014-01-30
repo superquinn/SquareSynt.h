@@ -1,4 +1,4 @@
-#include <SquareSynt.h>
+#include <SquareSynth.h>
 
 // example sketch, cycling through stable range of notes.
 // toggling between noise mode and a tone at 50% duty cycle

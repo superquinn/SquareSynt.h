@@ -121,19 +121,35 @@ void Synth_Class::generate(){
   else {
     unsigned long timeNow=micros();
     _microTimerDuty=timeNow-_microTimerWave; // keeps track of exact point of duty cycle
-    if(_microTimerDuty<=_microWavelength*_volatileDuty) {
-      if(!_high) {
+    if(_microTimerDuty<=_microWavelength*(1-_volatileDuty)) {
+      // the duty cycle is actually reversed here.(e.g. --_ = _-- and -__ = __-)
+      // The reason for this is that I want to leave the flag
+      // calculation to run during the dead (LOW) space of the wave.
+      // Since most users use the % range of 0 to 50, Calculating
+      // the flagged functions may eat into the time specified by
+      // that duty cycle, extending it and returning false results.
+      // calculating inbetween each waveform would just lower the
+      // frequency depending on how long it takes to resolve the
+      // flagged items.
+      // So, calculating while the wave is LOW would be most efficient
+      // since statistically, the time spent on LOW will be longer
+      // than HIGH anyways.
+      // If you're too purist, just remove the 1- in (1-_volatileDuty)
+      // to change it back to a non-reversed duty cycle!
+      if(!_high) { // this is actually second
         digitalWrite(_pin, HIGH);
         _high=true;
       }
     }
-    else{
+    else{ // this is actally first
       if(_high) {
         digitalWrite(_pin, LOW);
         _high=false;
       }
       if(_microTimerDuty>=_microWavelength) { // this runs at the end of each cycle.
         _microTimerWave=timeNow; // when duty completes, reset wave timer
+        digitalWrite(_pin, LOW); // this fixes problems with signal stretching while flags are being resolved!
+        _high=false;
         
         // are any flags set?
         
@@ -260,6 +276,14 @@ void Synth_Class::noteOff(){
   return;
 }
 
+void Synth_Class::clearFlags(){
+  _transform=false;
+  _addDepth=false;
+  _noise=false;
+  arpeggioOff();
+  return;
+}
+
 void Synth_Class::_recievetempo(int tempoVal){
   _tempo=tempoVal;
   return;
@@ -268,6 +292,22 @@ void Synth_Class::_recievetempo(int tempoVal){
 ///////////////////////////////////////////////////////////////
 ////               High-level routines here                ////
 ///////////////////////////////////////////////////////////////
+
+// Simple commands:
+
+void Synth_Class::note(int note, int duty, int depth, int steps){
+  noteOn(note,duty);
+  addDepth(depth,steps);
+  return;
+}
+
+
+// Instrument commands:
+
+
+
+
+// Drumkit commands:
 
 void Synth_Class::cymbal(int note, int decay){
   
@@ -278,6 +318,10 @@ void Synth_Class::tom(int note, int decay){
 }
 
 void Synth_Class::kick(int note, int decay){
+  
+}
+
+void Synth_Class::hihat(int note, int decay){
   
 }
 

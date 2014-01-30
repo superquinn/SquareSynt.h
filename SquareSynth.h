@@ -67,6 +67,7 @@ class Synth_Class {
     void dutyCycle(int percent);
     void noise(int note=60, int minDuty=1, int maxDuty=51);
     void noteOff();
+    void clearFlags();
     
     /////////////////////////////////////////////  Don't use these unless
     ////    Automation-oriented functions    ////  You're using the
@@ -80,16 +81,17 @@ class Synth_Class {
     ////////////////////////////////////////////////
     
     // Simple commands:
+    void note(int note=60, int duty=50, int depth=15, int steps=1);
+    
+    // Instrument commands:
     
     
     // Drumkit commands:
     void cymbal(int note, int decay);
     void tom(int note, int decay);
     void kick(int note, int decay);
+    void hihat(int note, int decay);
     void snare(int note, int decay);
-    
-    // String commands:
-    
     
   private:
     bool _noise; // noise mode flag

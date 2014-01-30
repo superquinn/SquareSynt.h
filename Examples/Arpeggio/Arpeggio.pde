@@ -1,4 +1,4 @@
-#include "SquareSynt.h"
+#include <SquareSynth.h>
 
 // example sketch, cycling through stable range of notes.
 // toggling between clean notes and arpeggiated major chords

@@ -14,6 +14,7 @@ begin	KEYWORD2
 generate	KEYWORD2
 noteOn	KEYWORD2
 noteOff	KEYWORD2
+clearFlags	KEYWORD2
 pitchBend	KEYWORD2
 arpeggioOn	KEYWORD2
 arpeggioOff	KEYWORD2
@@ -21,4 +22,5 @@ addDepth	KEYWORD2
 dutyCycle	KEYWORD2
 noise	KEYWORD2
 transform	KEYWORD2
+note	KEYWORD2
 bool	KEYWORD2
