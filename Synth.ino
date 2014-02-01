@@ -7,8 +7,8 @@ void setup(){
 void loop(){
   LRtest();
   //drumTest();
-  /*
-  SquareSynth.tempo(140);
+
+  SquareSynth.tempo(200);
   bassRiffA();
   bassRiffA();
   bassRiffA();
@@ -19,7 +19,7 @@ void loop(){
   bassRiffA();
   bassRiffB();
   Channel[0].transposeOff();
-  */
+
 }
 
 void LRtest(){
@@ -82,24 +82,24 @@ void bassRiffB(){
 }
 
 void bassRiffA(){
-  Channel[0].noise(_C3);
+  Channel[0].noise(_C3);Channel[1].kick();
   SquareSynth.eighth();
-  Channel[0].note(_D3);
-  SquareSynth.eighth();
-  
-  Channel[0].note(_DS3);
-  SquareSynth.eighth();
-  Channel[0].note(_D3);
+  Channel[0].note(_D3);Channel[1].kick();
   SquareSynth.eighth();
   
-  Channel[0].note(_C3);
+  Channel[0].note(_DS3);Channel[1].tom(_C5);
   SquareSynth.eighth();
-  Channel[0].note(_DS3);
+  Channel[0].note(_D3);Channel[1].tom(_C5);
   SquareSynth.eighth();
   
-  Channel[0].noise(_C3);
+  Channel[0].note(_C3);Channel[1].kick();
   SquareSynth.eighth();
-  Channel[0].note(_CS3);
+  Channel[0].note(_DS3);Channel[1].kick();
+  SquareSynth.eighth();
+  
+  Channel[0].noise(_C3);Channel[1].tom(_C5);
+  SquareSynth.eighth();
+  Channel[0].note(_CS3);Channel[1].tom(_C5);
   SquareSynth.eighth();
 }
 
