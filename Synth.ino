@@ -5,7 +5,90 @@ void setup(){
 }
 
 void loop(){
-  songHolder1();
+  
+  drumTest();
+  
+  SquareSynth.tempo(200);
+  bassRiffA();
+  bassRiffA();
+  bassRiffA();
+  bassRiffB();
+  Channel[0].transposeOn(3);
+  bassRiffA();
+  bassRiffA();
+  bassRiffA();
+  bassRiffB();
+  Channel[0].transposeOff();
+}
+
+void drumTest(){
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].tom(_C5);
+  SquareSynth.eighth();
+  Channel[0].tom(_C5);
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].tom(_B4);
+  SquareSynth.eighth();
+  Channel[0].tom(_B4);
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].tom(_A4);
+  SquareSynth.eighth();
+  Channel[0].tom(_A4);
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].kick();
+  SquareSynth.eighth();
+  Channel[0].tom(_F4);
+  SquareSynth.eighth();
+  Channel[0].tom(_F4);
+  SquareSynth.eighth();
+  return; 
+}
+
+void bassRiffB(){
+  Channel[0].note(_D3, 50, 40, 2);
+  SquareSynth.quarter();
+  Channel[0].note(_E3, 50, 40, 2);
+  SquareSynth.quarter();
+  Channel[0].note(_F3, 50, 40, 2);
+  SquareSynth.quarter();
+  Channel[0].note(_DS3, 50, 40, 2);
+  SquareSynth.quarter();
+  return; 
+}
+
+void bassRiffA(){
+  Channel[0].noise(_C3);
+  SquareSynth.eighth();
+  Channel[0].note(_D3);
+  SquareSynth.eighth();
+  
+  Channel[0].note(_DS3);
+  SquareSynth.eighth();
+  Channel[0].note(_D3);
+  SquareSynth.eighth();
+  
+  Channel[0].note(_C3);
+  SquareSynth.eighth();
+  Channel[0].note(_DS3);
+  SquareSynth.eighth();
+  
+  Channel[0].noise(_C3);
+  SquareSynth.eighth();
+  Channel[0].note(_CS3);
+  SquareSynth.eighth();
 }
 
 void songHolder1(){

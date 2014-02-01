@@ -23,7 +23,7 @@ SquareSynth_Class::~SquareSynth_Class(){
 
 void SquareSynth_Class::begin(int synths, ...){
   //Synth.~Synth_Class(); // remove single version of object, as not being used.
-  _tempo=125; // initial tempo is 120bpm. (this is in millis per 16th note)
+  _tempo=62500; // initial tempo is 120bpm. (this is in micros per 32nd note)
   _synthCount=synths;
   Channel = new Synth_Class [synths]; // allocate array at specified size.
   
@@ -45,38 +45,38 @@ void SquareSynth_Class::begin(int synths, ...){
 ///////////////////////////////////////////////////////////////
 
 void SquareSynth_Class::tempo(int bpm){
-  _tempo=60000/(bpm*4); // value in millis for a sixteenth note.
+  _tempo=60000000/(bpm*8); // value in millis for a sixteenth note.
   for(int i=0; i<_synthCount; i++) Channel[i]._recievetempo(_tempo);
   return;
 }
 
 void SquareSynth_Class::proceed(int modifier){
-  long unsigned tempoTimer=millis();
-  int period=_tempo*modifier;
+  unsigned long tempoTimer=micros();
+  unsigned long period=_tempo*modifier;
   do{
     for(int i=0; i<_synthCount; i++) Channel[i].generate();
-  }while(millis()-tempoTimer<=period);
+  }while(micros()-tempoTimer<=period);
   return;
 }
 //----some shortcut routines----//
 void SquareSynth_Class::sixteenth(){
-  proceed();
-  return;
-}
-void SquareSynth_Class::eighth(){
   proceed(2);
   return;
 }
-void SquareSynth_Class::quarter(){
+void SquareSynth_Class::eighth(){
   proceed(4);
   return;
 }
-void SquareSynth_Class::half(){
+void SquareSynth_Class::quarter(){
   proceed(8);
   return;
 }
-void SquareSynth_Class::whole(){
+void SquareSynth_Class::half(){
   proceed(16);
+  return;
+}
+void SquareSynth_Class::whole(){
+  proceed(32);
   return;
 }
 //------------------------------//
@@ -110,7 +110,7 @@ void Synth_Class::begin(int pin){
   _arpeggioTrack=0;
   _pin=pin;
   _note=60; // default note.
-  _tempo=125; // default tempo (120bpm)
+  _tempo=62500; // default tempo (120bpm)
   _noise=false;
   _transform=false;
   _addDepth=false;
@@ -122,20 +122,22 @@ void Synth_Class::generate(){
     unsigned long timeNow=micros();
     _microTimerDuty=timeNow-_microTimerWave; // keeps track of exact point of duty cycle
     if(_microTimerDuty<=_microWavelength*(1-_volatileDuty)) {
+    // WE INTERRUPT THIS PROGRAM FOR AN IMPORTANT ANNOUNCEMENT!
       // the duty cycle is actually reversed here.(e.g. --_ = _-- and -__ = __-)
       // The reason for this is that I want to leave the flag
       // calculation to run during the dead (LOW) space of the wave.
       // Since most users use the % range of 0 to 50, Calculating
       // the flagged functions may eat into the time specified by
-      // that duty cycle, extending it and returning false results.
-      // calculating inbetween each waveform would just lower the
-      // frequency depending on how long it takes to resolve the
+      // that duty cycle, extending it and returning the wrong sound.
+      // Also, calculating inbetween each waveform would just lower
+      // the frequency depending on how long it takes to resolve the
       // flagged items.
       // So, calculating while the wave is LOW would be most efficient
       // since statistically, the time spent on LOW will be longer
       // than HIGH anyways.
       // If you're too purist, just remove the 1- in (1-_volatileDuty)
       // to change it back to a non-reversed duty cycle!
+    // AND BACK TO THE SHOW!
       if(!_high) { // this is actually second
         digitalWrite(_pin, HIGH);
         _high=true;
@@ -153,9 +155,21 @@ void Synth_Class::generate(){
         
         // are any flags set?
         
-        // Duty cycle flags:
+        // Kill/Clip flags:
         
+        // autoKill first, so other functions can be skipped.
+        if(_autoKill){
+          if(timeNow-_autoKillTrigger>_autoKillDelay){ // if delay time is reached, kill that thang!
+            if(_killArpeggio) arpeggioOff();
+            if(_killClip) _clip=false;
+            noteOff();
+            return;
+          }
+        }
+        
+        // Duty cycle flags:
         // Deals with _volatileDuty, to preserve the last user-defined duty cycle (_dutyCycle)
+        
         // noise generation shouldn't affect the other flagged functions, so it's up here.
         if(_noise) _volatileDuty=random(_minDuty,_maxDuty)*0.01; // alter next duty cycle for pseudo-noise
         
@@ -173,8 +187,8 @@ void Synth_Class::generate(){
         
         // as arpeggio calls a new note from the start, it should resolve first.
         if(_arpeggioCount){
-          _volatileNote=_note+_arpeggio[_arpeggioTrack]; // _volatileNote is assigned, so transform works correctly. (if flagged)
-          _microWavelength=_midiMap[_volatileNote];
+          _volatileNote=_note+_arpeggio[_arpeggioTrack]; // _volatileNote is assigned the value, so transform works correctly. (if flagged)
+          _microWavelength=_midiMap[_volatileNote+_transposition];
           if(_arpeggioTrack>=_arpeggioCount) _arpeggioTrack=0;
           else _arpeggioTrack++;
         }
@@ -182,13 +196,15 @@ void Synth_Class::generate(){
         // transform should resolve last, as it needs a final note value to alter.
         if(_transform) {
           unsigned long transMap=(timeNow-_transStart)*0.1;
-          if(transMap<=_transInterval) _microWavelength=10*map(transMap,0,_transInterval,(_midiMap[_volatileNote])*0.1,_transDestinationFreq);
+          if(transMap<=_transInterval) _microWavelength=10*map(transMap,0,_transInterval,(_midiMap[_volatileNote+_transposition])*0.1,_transDestinationFreq);
           else {// transform complete, assign new note and make sure it's the right one!
             _note=_volatileNote=_transDestinationNote;
-            _microWavelength=_midiMap[_note];
+            _microWavelength=_midiMap[_note+_transposition];
             _transform=false;
           }
         }
+        
+        // end of flag chunks.
       }
     }
   }
@@ -196,29 +212,30 @@ void Synth_Class::generate(){
 }
 
 void Synth_Class::noteOn(int pitch, int duty){
-  _note=_volatileNote=pitch;
+  _note=_volatileNote=pitch+_transposition;
   if(duty) dutyCycle(duty);
-  _microWavelength=_midiMap[pitch];
+  _microWavelength=_midiMap[pitch+_transposition];
+  _autoKill=false;
   return;
 }
 
 void Synth_Class::pitchBend(int bend){
-  if(!bend) _microWavelength=_midiMap[_volatileNote];
-  else _microWavelength=10*map(bend,-1000,1000,_midiMap[_volatileNote-2]*0.1,_midiMap[_volatileNote+2]*0.1);// again, some truncation for the map() function.
+  if(!bend) _microWavelength=_midiMap[_volatileNote+_transposition];
+  else _microWavelength=10*map(bend,-1000,1000,_midiMap[_volatileNote-2+_transposition]*0.1,_midiMap[_volatileNote+2+_transposition]*0.1);// again, some truncation for the map() function.
   return;
 }
 
 void Synth_Class::transform(int destination, int steps){
-  _transInterval=steps*_tempo*100; // everything has to be truncated a bit for map(). will all be expanded afterwards.
+  _transInterval=steps*_tempo*0.1; // everything has to be truncated a bit for map(). will all be expanded afterwards.
   _transStart=micros();
-  _transDestinationFreq=(_midiMap[destination])*0.1; // same as above
+  _transDestinationFreq=(_midiMap[destination+_transposition])*0.1; // same as above
   _transDestinationNote=destination;
   _transform=true;
   return;
 }
 
 void Synth_Class::addDepth(int duty, int steps){
-  _depthInterval=steps*_tempo*100;
+  _depthInterval=steps*_tempo*0.1;
   _depthStart=micros();
   _depthArgument=duty;
   _addDepth=true;
@@ -249,7 +266,17 @@ void Synth_Class::arpeggioOff(){
   for(int j=0; j<=MAX_ARPEGGIO; j++) _arpeggio[j]=0;
   _arpeggioCount=0;
   _arpeggioTrack=0;
-  _microWavelength=_midiMap[_note];
+  _microWavelength=_midiMap[_note+_transposition];
+  return;
+}
+
+void Synth_Class::transposeOn(int transposition){
+  _transposition=transposition;
+  return;
+}
+
+void Synth_Class::transposeOff(){
+  _transposition=0;
   return;
 }
 
@@ -263,9 +290,10 @@ void Synth_Class::noise(int pitch, int minDuty, int maxDuty){
   _note=_volatileNote=pitch;
   _minDuty=minDuty;
   _maxDuty=maxDuty;
-  _microWavelength=_midiMap[pitch];
+  _microWavelength=_midiMap[pitch+_transposition];
   _noise=true;
   _addDepth=false;
+  _autoKill=false;
   return;
 }
 
@@ -280,14 +308,27 @@ void Synth_Class::clearFlags(){
   _transform=false;
   _addDepth=false;
   _noise=false;
+  _clip=false;
+  _autoKill=false;
+  _transposition=0;
   arpeggioOff();
   return;
 }
 
-void Synth_Class::_recievetempo(int tempoVal){
+void Synth_Class::autoKill(int steps, bool killArpeggio, bool killClip){
+  _autoKillTrigger=micros();
+  _autoKillDelay=steps*_tempo;
+  _killArpeggio=killArpeggio;
+  _killClip=killClip;
+  _autoKill=true;
+  return;
+}
+
+void Synth_Class::_recievetempo(unsigned long tempoVal){
   _tempo=tempoVal;
   return;
 }
+
 
 ///////////////////////////////////////////////////////////////
 ////               High-level routines here                ////
@@ -302,6 +343,7 @@ void Synth_Class::note(int pitch, int duty, int depth, int steps){
 }
 
 
+
 // Instrument commands:
 
 
@@ -311,29 +353,28 @@ void Synth_Class::note(int pitch, int duty, int depth, int steps){
 
 void Synth_Class::cymbal(int pitch, int decay, int steps){
   noise(pitch);
-  transform(pitch-decay, steps);
+  transform(pitch-decay,steps);
   
   return;
 }
 
 void Synth_Class::tom(int pitch, int decay, int steps){
-  note(pitch);
-  transform(pitch-decay, steps);
-  
+  noteOn(pitch,50);
+  transform(pitch-decay,steps);
+  autoKill(steps);
   return;
 }
 
 void Synth_Class::kick(int pitch, int decay, int steps){
-  note(pitch);
-  transform(pitch-decay, steps);
-  
+  noteOn(pitch,50);
+  transform(pitch-decay,steps+1);
+  autoKill(steps);
   return;
 }
 
 void Synth_Class::hihat(int pitch, int decay, int steps){
-  note(pitch);
-  transform(pitch-decay, steps);
-  
+  noise(pitch);
+  transform(pitch-decay,steps);
   return;
 }
 
