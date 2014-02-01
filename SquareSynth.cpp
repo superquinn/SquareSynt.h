@@ -22,7 +22,7 @@ SquareSynth_Class::~SquareSynth_Class(){
 }
 
 void SquareSynth_Class::begin(int synths, ...){
-  //Synth.~Synth_Class(); // remove single version of object, as not being used.
+  Synth.~Synth_Class(); // remove single version of object, as not being used.
   _tempo=62500; // initial tempo is 120bpm. (this is in micros per 32nd note)
   _synthCount=synths;
   Channel = new Synth_Class [synths]; // allocate array at specified size.
@@ -53,9 +53,9 @@ void SquareSynth_Class::tempo(int bpm){
 void SquareSynth_Class::proceed(int modifier){
   unsigned long tempoTimer=micros();
   unsigned long period=_tempo*modifier;
-  do{
+  while(micros()-tempoTimer<=period){
     for(int i=0; i<_synthCount; i++) Channel[i].generate();
-  }while(micros()-tempoTimer<=period);
+  }
   return;
 }
 //----some shortcut routines----//

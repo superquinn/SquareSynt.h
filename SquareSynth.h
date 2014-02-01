@@ -96,7 +96,7 @@ class Synth_Class {
     // Drumkit commands:
     void cymbal(int pitch=60, int decay=4, int steps=4);
     void tom(int pitch=60, int decay=4, int steps=3);
-    void kick(int pitch=40, int decay=2, int steps=1);
+    void kick(int pitch=36, int decay=3, int steps=1);
     void hihat(int pitch=80, int decay=1, int steps=1);
     void hihatOpen(int pitch=60, int decay=4, int steps=4);
     void snare(int pitch=60, int decay=4, int steps=1);

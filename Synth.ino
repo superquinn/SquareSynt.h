@@ -1,14 +1,14 @@
 #include "SquareSynth.h"
 
 void setup(){
-  SquareSynth.begin(1,11);
+  SquareSynth.begin(2,11,12);
 }
 
 void loop(){
-  
-  drumTest();
-  
-  SquareSynth.tempo(200);
+  LRtest();
+  //drumTest();
+  /*
+  SquareSynth.tempo(140);
   bassRiffA();
   bassRiffA();
   bassRiffA();
@@ -19,6 +19,18 @@ void loop(){
   bassRiffA();
   bassRiffB();
   Channel[0].transposeOff();
+  */
+}
+
+void LRtest(){
+  Channel[0].note();
+  SquareSynth.quarter();
+  Channel[0].noteOff();
+  SquareSynth.quarter();
+  Channel[1].note();
+  SquareSynth.quarter();
+  Channel[1].noteOff();
+  SquareSynth.quarter();
 }
 
 void drumTest(){
