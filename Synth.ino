@@ -5,10 +5,10 @@ void setup(){
 }
 
 void loop(){
-  LRtest();
+  //LRtest();
   //drumTest();
-
-  SquareSynth.tempo(200);
+/*
+  SquareSynth.tempo(180);
   bassRiffA();
   bassRiffA();
   bassRiffA();
@@ -19,7 +19,7 @@ void loop(){
   bassRiffA();
   bassRiffB();
   Channel[0].transposeOff();
-
+*/
 }
 
 void LRtest(){
@@ -34,38 +34,14 @@ void LRtest(){
 }
 
 void drumTest(){
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].tom(_C5);
-  SquareSynth.eighth();
-  Channel[0].tom(_C5);
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].tom(_B4);
-  SquareSynth.eighth();
-  Channel[0].tom(_B4);
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].tom(_A4);
-  SquareSynth.eighth();
-  Channel[0].tom(_A4);
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].kick();
-  SquareSynth.eighth();
-  Channel[0].tom(_F4);
-  SquareSynth.eighth();
-  Channel[0].tom(_F4);
-  SquareSynth.eighth();
+  Channel[0].cymbal();
+  SquareSynth.whole();
+  //Channel[0].hihat();
+  //SquareSynth.whole();
+  //Channel[0].snare();
+  //SquareSynth.whole();
+  //Channel[0].hihatOpen();
+  //SquareSynth.whole();
   return; 
 }
 

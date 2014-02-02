@@ -68,6 +68,7 @@ class Synth_Class {
     void arpeggioOff();
     void dutyCycle(int percent);
     void noise(int pitch=60, int minDuty=1, int maxDuty=51);
+    void freqNoise(int minPitch=0,int maxPitch=127);
     void noteOff();
     void transposeOn(int transposition);
     void transposeOff();
@@ -80,8 +81,8 @@ class Synth_Class {
     void transform(int destination, int steps); // transforms current note to specified note, spanning x many steps (16th notes)
     void addDepth(int duty=15, int steps=1); // bends the duty cycle briefly, starting at specified duty and ending at original; spanning x many steps (16th notes)
     void autoKill(int steps=1, bool killArpeggio=false, bool killClip=false); // kills note after specified number of steps. the boolean arguments are used in some of the drum synth functions.
-    void clip(int percent, int steps); // cuts out a percentage of the waveforms to make the sound more jagged.
-    void noClip(); // stops clipping.
+    void clip(int percent, int steps=0); // cuts out a percentage of the waveforms to make the sound more jagged.
+    void clipOff(); // stops clipping.
     
     ////////////////////////////////////////////////
     // High-level routines (instruments & stuff!) //
@@ -94,11 +95,11 @@ class Synth_Class {
     
     
     // Drumkit commands:
-    void cymbal(int pitch=60, int decay=4, int steps=4);
+    void cymbal(int pitch=80, int decay=6, int steps=1);
     void tom(int pitch=60, int decay=4, int steps=3);
     void kick(int pitch=36, int decay=3, int steps=1);
-    void hihat(int pitch=80, int decay=1, int steps=1);
-    void hihatOpen(int pitch=60, int decay=4, int steps=4);
+    void hihat(int pitch=70, int decay=1, int steps=1);
+    void hihatOpen(int pitch=70, int decay=4, int steps=4);
     void snare(int pitch=60, int decay=4, int steps=1);
     
   private:
@@ -119,6 +120,7 @@ class Synth_Class {
     unsigned long _microTimerWave; // wavelength timer
     unsigned long _microTimerDuty; // duty cycle timer
     static const unsigned long _midiMap[128]; // mappings of midi to wavelength in microseconds
+    
     /////////////////////////////////////////////
     ////    Automation-oriented variables    ////
     /////////////////////////////////////////////
@@ -144,17 +146,22 @@ class Synth_Class {
     bool _killArpeggio; // kill arpeggio too?
     bool _killClip; // kill clipping too?
     unsigned long _autoKillDelay; // delay until note is killed
-    unsigned long _autoKillTrigger; // stores the time of triggering.
+    unsigned long _autoKillStart; // stores the time of triggering.
     // end of autoKill vars.
     
     // clip vars:
-    bool _clip;
+    bool _clip; // clip flag for calculation
+    bool _clipping; // check for whether clipping is in effect.
+    unsigned long _clipInterval; // (optional) delay until clipping ends.
+    unsigned long _clipStart; // time of flagging.
+    int _clipCount; // keeps track of cycle count.
+    int _clipPercent; // percentage of cycles to skip.
     // end of clip vars.
     
 };
 
 extern SquareSynth_Class SquareSynth;
-extern Synth_Class *Channel;
-extern Synth_Class Synth; // Note that SquareSynth commands wont work on this 'Synth' object.
+extern Synth_Class *Channel; // If you're using multiple channels, and controlling timing and such with the 'SquareSynth' object, this is the one to use.
+extern Synth_Class Synth; // Note that 'SquareSynth' commands won't work on the basic 'Synth' object.
 
 #endif
