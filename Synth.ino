@@ -5,9 +5,9 @@ void setup(){
 }
 
 void loop(){
-  //LRtest();
+  LRtest();
   //drumTest();
-/*
+
   SquareSynth.tempo(180);
   bassRiffA();
   bassRiffA();
@@ -19,7 +19,7 @@ void loop(){
   bassRiffA();
   bassRiffB();
   Channel[0].transposeOff();
-*/
+
 }
 
 void LRtest(){

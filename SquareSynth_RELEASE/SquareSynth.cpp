@@ -113,14 +113,6 @@ void Synth_Class::begin(int pin){
 
 void Synth_Class::generate(){
   if(!_microWavelength) return; // setting the wavelength to 0 will stop the wave.
-  /*if(_clip){
-    if(_clipInterval){
-      if(timeNow-_clipStart>=_clipInterval) _clip=false;
-    }
-    if(_clipCount<100) _clipCount++;
-    else _clipCount=0;
-    if(_clipCount<_clipPercent) return;
-  }*/
   unsigned long timeNow=micros();
   _microTimerDuty=timeNow-_microTimerWave; // keeps track of exact point of duty cycle
   if(_microTimerDuty<=_microWavelength*(1-_volatileDuty)) {
@@ -164,7 +156,6 @@ void Synth_Class::generate(){
       if(_autoKill){
         if(timeNow-_autoKillStart>_autoKillDelay){ // if delay time is reached, kill that thang!
           if(_killArpeggio) arpeggioOff();
-          if(_killFreqNoise) _freqNoise=false;
           noteOff();
           return;
         }
@@ -200,8 +191,7 @@ void Synth_Class::generate(){
       if(_transform) {
         unsigned long transMap=(timeNow-_transStart)*0.1;
         if(transMap<=_transInterval) {
-          if(_freqNoise) _freqBaseNote=map(transMap,0,_transInterval,_volatileNote+_transposition,_transDestinationNote);
-          else _microWavelength=10*map(transMap,0,_transInterval,_midiMap[_volatileNote+_transposition]*0.1,_transDestinationFreq);
+          _microWavelength=10*map(transMap,0,_transInterval,_midiMap[_volatileNote+_transposition]*0.1,_transDestinationFreq);
         }
         else {// transform complete, assign new note and make sure it's the right one!
           _note=_volatileNote=_transDestinationNote;
@@ -209,13 +199,6 @@ void Synth_Class::generate(){
           _transform=false;
         }
       }
-      
-      // frequency noise at the end.
-      if(_freqNoise){
-        if(!_transform) _freqBaseNote=_volatileNote;
-        _microWavelength=10*random(_midiMap[_freqBaseNote-_freqNegMod]*0.1, _midiMap[_freqBaseNote+_freqPosMod]*0.1);
-      }
-      
       // end of flag chunks.
     }
   }
@@ -227,7 +210,6 @@ void Synth_Class::noteOn(int pitch, int duty){
   if(duty) dutyCycle(duty);
   _microWavelength=_midiMap[pitch+_transposition];
   _autoKill=false;
-  _freqNoise=false;
   return;
 }
 
@@ -253,21 +235,6 @@ void Synth_Class::addDepth(int duty, int steps){
   _addDepth=true;
   return;
 }
-
-/*
-void Synth_Class::clip(int percent, int steps){
-  _clipCount=0;
-  _clipPercent=percent;
-  _clipInterval=steps*_tempo;
-  _clipStart=micros();
-  _clip=true;
-  return;
-}
-
-void Synth_Class::clipOff(){
-  _clip=false;
-}
-*/
 
 void Synth_Class::arpeggioOn(int offset1, int offset2, int offset3, int offset4){
   // Messy, but efficient.
@@ -324,16 +291,6 @@ void Synth_Class::noise(int pitch, int minDuty, int maxDuty){
   return;
 }
 
-void Synth_Class::frequencyNoise(int pitch, int negMod, int posMod){
-  _volatileNote=_note=pitch;
-  _microWavelength=_midiMap[_volatileNote+_transposition];
-  _freqNegMod=negMod;
-  _freqPosMod=posMod;
-  _freqNoise=true;
-  _autoKill=false;
-  return;
-}
-
 void Synth_Class::noteOff(){
   _microWavelength=0;
   digitalWrite(_pin,LOW); // save power, leds will change properly.
@@ -346,21 +303,16 @@ void Synth_Class::clearFlags(){
   _transform=false;
   _addDepth=false;
   _noise=false;
-  //_clip=false;
-  //_clipCount=0;
-  //_clipInterval=0;
   _autoKill=false;
   _transposition=0;
-  _freqNoise=false;
   arpeggioOff();
   return;
 }
 
-void Synth_Class::autoKill(int steps, bool killArpeggio, bool killFreqNoise){
+void Synth_Class::autoKill(int steps, bool killArpeggio){
   _autoKillStart=micros();
   _autoKillDelay=steps*_tempo;
   _killArpeggio=killArpeggio;
-  _killFreqNoise=killFreqNoise;
   _autoKill=true;
   return;
 }
@@ -380,57 +332,5 @@ void Synth_Class::_recievetempo(unsigned long tempoVal){
 void Synth_Class::note(int pitch, int duty, int depth, int steps){
   noteOn(pitch,duty);
   addDepth(depth,steps);
-  return;
-}
-
-
-
-// Instrument commands:
-
-
-
-
-// Drumkit commands:
-
-void Synth_Class::cymbal(int pitch, int decay, int steps){
-  //noise(pitch);
-  frequencyNoise(pitch);
-  //arpeggioOn(-4,-2,2,3);
-  //transform(pitch-decay,steps);
-  autoKill(steps+10);
-  return;
-}
-
-void Synth_Class::tom(int pitch, int decay, int steps){
-  noteOn(pitch,50);
-  transform(pitch-decay,steps);
-  autoKill(steps);
-  return;
-}
-
-void Synth_Class::kick(int pitch, int decay, int steps){
-  noteOn(pitch,50);
-  transform(pitch-decay,steps+1);
-  autoKill(steps);
-  return;
-}
-
-void Synth_Class::hihat(int pitch, int decay, int steps){
-  noise(pitch);
-  transform(pitch-decay,steps);
-  return;
-}
-
-void Synth_Class::hihatOpen(int pitch, int decay, int steps){
-  noise(pitch);
-  transform(pitch-decay, steps);
-  
-  return;
-}
-
-void Synth_Class::snare(int pitch, int decay, int steps){
-  noise(pitch);
-  transform(pitch-decay, steps);
-  
   return;
 }
