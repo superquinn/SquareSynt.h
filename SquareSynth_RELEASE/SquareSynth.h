@@ -77,7 +77,7 @@ class Synth_Class {
     ////    Automation-oriented functions    ////  You're using the
     /////////////////////////////////////////////  SquareSynth governor!
     void _recievetempo(unsigned long tempoVal); // Don't use this! Ever! Unless you want some crazy prog stuff!
-    void transform(int destination, int steps); // transforms current note to specified note, spanning x many steps (16th notes)
+    void transform(int destination, int steps); // transforms current note to specified note, spanning x many steps
     void addDepth(int duty=15, int steps=2); // bends the duty cycle briefly, starting at specified duty and ending at original; spanning x many steps (16th notes)
     void autoKill(int steps=1, bool killArpeggio=false); // kills note after specified number of steps. the boolean arguments are used in some of the drum synth functions.
     
