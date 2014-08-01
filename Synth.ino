@@ -1,13 +1,24 @@
 #include "SquareSynth.h"
 
+int num = 0;
+
 void setup(){
   SquareSynth.begin(2,11,12);
 }
 
 void loop(){
-  LRtest();
+  //LRtest();
   //drumTest();
+  Channel[0].note();
+  Channel[0].frequencyNoise(num);
+  SquareSynth.whole();
+  //bassRiffThing();
+  
+  //songHolder1();
+  num+=1;
+}
 
+void bassRiffThing(){
   SquareSynth.tempo(180);
   bassRiffA();
   bassRiffA();
@@ -19,7 +30,6 @@ void loop(){
   bassRiffA();
   bassRiffB();
   Channel[0].transposeOff();
-
 }
 
 void LRtest(){
