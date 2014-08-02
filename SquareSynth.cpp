@@ -30,7 +30,7 @@ void Synth_Class::begin(int pin){
   _microTimerWave=micros();
   _dutyCycle=_volatileDuty=50;
   _note=60; // default note.
-  _tempo=1000; // default tempo (60bpm)
+  _tempo=50000;
   clearFlags();
 }
 
@@ -128,8 +128,9 @@ void Synth_Class::noteOn(int pitch, int duty){
 }
 
 void Synth_Class::pitchBend(int bend){
-  if(!bend) _microWavelength=_midiMap[_volatileNote+_transposition];
-  else _microWavelength=10*map(bend,-1000,1000,_midiMap[_volatileNote-2+_transposition]*0.1,_midiMap[_volatileNote+2+_transposition]*0.1);// again, some truncation for the map() function.
+  int tempNote = _volatileNote+_transposition
+  if(!bend) _microWavelength=_midiMap[tempNote];
+  else _microWavelength=10*map(bend,-1000,1000,_midiMap[tempNote-4]*0.1,_midiMap[tempNote+4]*0.1);// again, some truncation for the map() function.
   return;
 }
 
