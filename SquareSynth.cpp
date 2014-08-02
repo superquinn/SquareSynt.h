@@ -30,7 +30,7 @@ void Synth_Class::begin(int pin){
   _microTimerWave=micros();
   _dutyCycle=_volatileDuty=50;
   _note=60; // default note.
-  _tempo=1000; // default tempo (60bpm)
+  _tempo=100; // default tempo (10 ticks per second.)
   clearFlags();
 }
 
