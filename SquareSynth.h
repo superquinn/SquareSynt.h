@@ -1,11 +1,13 @@
 #ifndef SquareSynth_h
 #define SquareSynth_h
 
-#include <Arduno.h>
+#include <Arduino.h>
 #include "SquareSynthNoteDefs.h"
 
 // change these if you know what you're doing
 #define MAX_ARPEGGIO 4 // also edit sendArpeggioOn()
+#define USE_PORTD 0
+#define USE_P1OUT 0
 // ------------------------------------------
 
     /////////////////////////////////////////////
@@ -40,7 +42,7 @@ class SquareSynth_Class {
     void whole(); // this is all pretty straightforward.
     // end of timing chunks.
     
-    void generate(); // acts the same as Synth/Channel[]'s generate, but calls all instances. Use this over the timing blocks for HID sketches. Or MIDI interfacing.
+    void generate(); // acts the same as Channel[]'s generate, but calls all instances. Use this over the timing blocks for HID sketches. Or MIDI interfacing.
   private:
     int _synthCount;
     unsigned long _tempo; // tempo in micros per 32nd note
@@ -114,6 +116,8 @@ class Synth_Class {
     int _note; // keep track of MIDI note value for reference
     int _volatileNote; // mutate this instead of _note
     int _pin; // stores the pin number
+    int _pinToBit[8]; // convert pin number to bit position
+    int _pinBit; // this is for PORTD ops.
     float _dutyCycle; //stores user-defined duty cycle, in decimal form.
     float _volatileDuty; // duty cycle used in generate(). can be changed by automation flags.
     int _minDuty; // optional paramaters for the noise generator
@@ -165,7 +169,6 @@ class Synth_Class {
 };
 
 extern SquareSynth_Class SquareSynth;
-extern Synth_Class *Channel; // If you're using multiple channels, and controlling timing and such with the 'SquareSynth' object, this is the one to use.
-extern Synth_Class Synth; // Note that 'SquareSynth' commands won't work on the basic 'Synth' object.
+extern Synth_Class *Channel;
 
 #endif
