@@ -10,7 +10,7 @@ int toggle[2]={1,0};
 
 void setup() {
   pinMode(11,OUTPUT);
-  Synth.begin(11);
+  SquareSynth.begin(1, 11);
   timer=millis();
 }
 
@@ -23,11 +23,11 @@ void loop(){
     }
     if(toggle[0]>0) note++;
     else note--;
-    Synth.noteOn(note,50);
+    Channel[0].noteOn(note,50);
     if(toggle[1]>3) toggle[1]=0;
-    if(toggle[1]>1) Synth.arpeggioOn(4,7);
-    else Synth.arpeggioOff();
+    if(toggle[1]>1) Channel[0].arpeggioOn(4,7);
+    else Channel[0].arpeggioOff();
     timer=count;
   }
-  Synth.generate();
+  Channel[0].generate();
 }

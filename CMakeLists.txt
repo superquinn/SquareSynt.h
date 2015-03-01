@@ -3,4 +3,4 @@ project(SquareSynth)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES SquareSynth.cpp SquareSynth.h SquareSynthNoteDefs.h SquareSynth.ino)
+set(SOURCE_FILES Synth/SquareSynth.cpp Synth/SquareSynth.h Synth/SquareSynthNoteDefs.h Synth/Synth.ino)

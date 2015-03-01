@@ -6,8 +6,8 @@
 
 // change these if you know what you're doing
 #define MAX_ARPEGGIO 4 // also edit sendArpeggioOn()
-#define USE_PORTD 0
-#define USE_P1OUT 0
+#define USE_PORTD_PORTD 1 // most atmega chips use this.
+#define USE_P1OUT_P2OUT 0 // msp launchpad uses this.
 // ------------------------------------------
 
     /////////////////////////////////////////////
@@ -116,7 +116,7 @@ class Synth_Class {
     int _note; // keep track of MIDI note value for reference
     int _volatileNote; // mutate this instead of _note
     int _pin; // stores the pin number
-    int _pinToBit[8]; // convert pin number to bit position
+    static const unsigned int _pinToBit[16]; // convert pin number to bit position
     int _pinBit; // this is for PORTD ops.
     float _dutyCycle; //stores user-defined duty cycle, in decimal form.
     float _volatileDuty; // duty cycle used in generate(). can be changed by automation flags.

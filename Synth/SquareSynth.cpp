@@ -21,7 +21,6 @@ SquareSynth_Class::~SquareSynth_Class(){
 }
 
 void SquareSynth_Class::begin(int synths, ...){
-  Synth.~Synth_Class(); // remove single version of object, as not being used.
   _tempo=62500; // initial tempo is 120bpm. (this is in micros per 32nd note)
   _synthCount=synths;
   Channel = new Synth_Class [synths]; // allocate array at specified size.
@@ -98,13 +97,13 @@ Synth_Class::~Synth_Class(){
 }
 
 const unsigned long Synth_Class::_midiMap[128]={122312,115447,108967,102851,97079,91630,86487,81633,77051,72727,68645,64792,61156,57723,54483,51425,48539,45815,43243,40816,38525,36363,34322,32396,30578,28861,27241,25712,24269,22907,21621,20408,19262,18181,17161,16198,15289,14430,13620,12856,12134,11453,10810,10204,9631,9090,8580,8099,7644,7215,6810,6428,6067,5726,5405,5102,4815,4545,4290,4049,3822,3607,3405,3214,3033,2863,2702,2551,2407,2272,2145,2024,1911,1803,1702,1607,1516,1431,1351,1275,1203,1136,1072,1012,955,901,851,803,758,715,675,637,601,568,536,506,477,450,425,401,379,357,337,318,300,284,268,253,238,225,212,200,189,178,168,159,150,142,134,126,119,112,106,100,94,89,84,79};
-const unsigned int Synth_Class::_pinToBit[8]={1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128};
+const unsigned int Synth_Class::_pinToBit[16]={1, 2, 4, 8, 16, 32, 64, 128, 1, 2, 4, 8, 16, 32, 64, 128};
 
 void Synth_Class::begin(int pin){
   _pin=pin;
   pinMode(_pin,OUTPUT);
   if(pin<16) _pinBit = _pinToBit[_pin];
-  else _pinbit = 0; // ohdear.
+  else _pinBit = 0; // ohdear.
   _microWavelength=0;
   _microTimerWave=micros();
   _dutyCycle=_volatileDuty=50;
@@ -139,11 +138,12 @@ void Synth_Class::generate(){
     // since statistically, the time spent on LOW will be longer
     // than HIGH anyways.
     if(!_high) { // this is actually second
-      #if USE_PORTD
-        if(_pin<8) PORTD |= _binPin;
-        else PORTB |= _binPin;
-      #elif USE_P1OUT
-        digitalWrite(_pin, HIGH); // this has to be finished.
+      #if USE_PORTD_PORTB
+        if(_pin<8) PORTD |= _pinBit;
+        else PORTB |= _pinBit;
+      #elif USE_P1OUT_P2OUT
+        if(_pin<8) P1OUT |= _pinBit;
+        else P2OUT |= _pinBit;
       #else
         digitalWrite(_pin, HIGH);
       #endif
@@ -152,11 +152,12 @@ void Synth_Class::generate(){
   }
   else{ // this is actally first
     if(_high) {
-      #if USE_PORTD
-        if(_pin<8) PORTD &= _binPin^255;
-        else PORTB &= _binPin^255;
-      #elif USE_P1OUT
-        digitalWrite(_pin, LOW); // this has to be finished.
+      #if USE_PORTD_PORTB
+        if(_pin<8) PORTD &= _pinBit^255;
+        else PORTB &= _pinBit^255;
+      #elif USE_P1OUT_P2OUT
+        if(_pin<8) P1OUT &= _pinBit^255;
+        else P2OUT &= _pinBit^255;
       #else
         digitalWrite(_pin, LOW);
       #endif
